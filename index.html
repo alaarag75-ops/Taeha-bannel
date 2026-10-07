@@ -397,7 +397,23 @@
                                 <img src="${u.avatar || ''}" class="w-8 h-8 rounded-full object-cover">
                                 <div>
                                     <div class="flex items-center gap-1">
-                                        <span class="text-xs fo
+                                        <span class="text-xs font-bold text-white">${p.author}</span>
+                                        ${u.isVerified ? '<i class="fa-solid fa-circle-check text-blue-400 text-[11px]"></i>' : ''}
+                                    </div>
+                                    <span class="text-[10px] text-gray-400">${p.date}</span>
+                                </div>
+                            </div>
+                            <button onclick="copyCode(this)" class="text-[11px] bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white px-2.5 py-1 rounded-lg border border-blue-500/30 font-bold transition">
+                                <i class="fa-regular fa-copy ml-1"></i>نسخ
+                            </button>
+                        </div>
+                        <h4 class="text-xs font-bold text-blue-400">${p.title}</h4>
+                        <pre class="bg-black/70 p-3 rounded-xl font-mono text-xs text-emerald-400 overflow-x-auto border border-white/10">${escapeHtml(p.code)}</pre>
+                    </div>
+                `;
+            }).join('');
+        }
+
         function copyCode(btn) {
             const code = btn.parentElement.nextElementSibling.nextElementSibling.innerText;
             navigator.clipboard.writeText(code);
@@ -410,7 +426,6 @@
         function escapeHtml(text) {
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
-
         // Settings Modal, Theme & Video BG Switcher
         function openSettingsModal() {
             document.getElementById('settingsModal').classList.remove('hidden');
@@ -485,7 +500,6 @@
             renderPosts();
             closeProfileModal();
         }
-
         // Dev Auth (كود سرّي مُشفر TAEHADEV)
         function openDevAuth() { document.getElementById('devAuthModal').classList.remove('hidden'); }
         function closeDevAuth() { document.getElementById('devAuthModal').classList.add('hidden'); }
