@@ -13,75 +13,79 @@
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background: #060913;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* الثيم الداكن (Dark Mode) */
+        body.dark-mode {
+            background-color: #060913;
             color: #f1f5f9;
-            overflow-x: hidden;
         }
-
-        /* خلفية ديناميكية متحركة بالنيون */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.18), transparent 40%),
-                        radial-gradient(circle at 80% 80%, rgba(147, 51, 234, 0.18), transparent 40%),
-                        radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1), transparent 50%),
-                        #060913;
-            background-size: 200% 200%;
-            animation: gradientMove 12s infinite alternate ease-in-out;
-            z-index: -1;
-        }
-
-        @keyframes gradientMove {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 100%; }
-        }
-
-        /* كروت زجاجية فائقة الجودة */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.7);
+        body.dark-mode .glass-card {
+            background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-
-        .neon-border-blue {
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-        }
-
-        .input-style {
-            background-color: rgba(10, 15, 30, 0.8);
+        body.dark-mode .input-style {
+            background-color: rgba(10, 15, 30, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: #fff;
-            transition: all 0.3s ease;
         }
+
+        /* الثيم الفاتح (Light Mode) */
+        body.light-mode {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        body.light-mode .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        body.light-mode .input-style {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #0f172a;
+        }
+        body.light-mode .text-white { color: #0f172a !important; }
+        body.light-mode .text-gray-400 { color: #64748b !important; }
+
         .input-style:focus {
             border-color: #3b82f6;
-            box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
             outline: none;
+        }
+
+        /* خلفية الفيديو الخاصة بلوحة المطور */
+        .dev-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            opacity: 0.35;
+            pointer-events: none;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between pb-16 md:pb-0 select-none">
+<body class="dark-mode min-h-screen flex flex-col justify-between pb-16 md:pb-0 select-none">
 
-    <!-- Background -->
-    <div class="animated-bg"></div>
-
-    <!-- Header Navbar -->
-    <header class="w-full glass-card sticky top-0 z-30 p-3 border-b border-white/10">
+    <!-- Navbar -->
+    <header class="w-full glass-card sticky top-0 z-30 p-3 border-b">
         <div class="max-w-2xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2.5">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-black shadow-lg shadow-blue-500/30">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-black shadow-lg">
                     <i class="fa-solid fa-code"></i>
                 </div>
                 <span class="font-black text-base text-white tracking-wide">Taeha Panel</span>
             </div>
 
             <div class="flex items-center gap-2">
+                <button onclick="openSettingsModal()" class="text-xs bg-gray-800/60 hover:bg-gray-700 text-gray-200 p-2 rounded-xl border border-white/10 transition" title="الإعدادات">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </button>
                 <button onclick="openDevAuth()" class="text-xs bg-red-500/15 hover:bg-red-500/30 text-red-400 border border-red-500/40 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-shield-halved"></i>
                     <span>الإدارة</span>
@@ -95,8 +99,8 @@
     <main class="max-w-xl w-full mx-auto p-3 flex-1">
         
         <!-- Login Card -->
-        <div id="authScreen" class="glass-card neon-border-blue rounded-3xl p-6 my-10 max-w-sm mx-auto space-y-5 text-center">
-            <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-2xl text-white shadow-lg shadow-blue-500/40">
+        <div id="authScreen" class="glass-card rounded-3xl p-6 my-10 max-w-sm mx-auto space-y-5 text-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-2xl text-white shadow-lg">
                 <i class="fa-solid fa-user-astronaut"></i>
             </div>
 
@@ -120,7 +124,7 @@
                     <label for="rememberMe" class="text-xs text-gray-300 cursor-pointer font-bold">تذكرني على هذا الجهاز</label>
                 </div>
 
-                <button onclick="loginUser()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black py-3 rounded-xl text-xs shadow-lg shadow-blue-500/30 transition transform active:scale-95">
+                <button onclick="loginUser()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black py-3 rounded-xl text-xs shadow-lg transition transform active:scale-95">
                     دخول المنصة 🚀
                 </button>
             </div>
@@ -129,8 +133,8 @@
         <!-- Dashboard Content -->
         <div id="appContent" class="hidden space-y-4">
             
-            <!-- User Profile Card -->
-            <div class="glass-card rounded-2xl p-4 flex items-center justify-between border-white/10">
+            <!-- Profile Info Header -->
+            <div class="glass-card rounded-2xl p-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <img id="userAvatarHeader" src="" class="w-12 h-12 rounded-full object-cover border-2 border-blue-500/50 shadow-md">
                     <div>
@@ -141,7 +145,7 @@
                         <p id="userBioHeader" class="text-[11px] text-gray-400 leading-tight mt-0.5"></p>
                     </div>
                 </div>
-                <button onclick="openProfileModal()" class="text-xs bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 border border-blue-500/30 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition">
+                <button onclick="openProfileModal()" class="text-xs bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-user-pen"></i>
                     <span>تعديل</span>
                 </button>
@@ -149,7 +153,7 @@
 
             <!-- New Post Publisher -->
             <div class="glass-card rounded-2xl p-4 space-y-3">
-                <span class="text-xs font-bold text-gray-200 flex items-center gap-1.5">
+                <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
                     <i class="fa-solid fa-code text-blue-400"></i> نشر كود أو اسكريبت جديد:
                 </span>
                 <input type="text" id="postTitle" placeholder="عنوان الكود (مثال: اسكريبت بوت واتساب)" class="w-full input-style rounded-xl p-2.5 text-xs">
@@ -165,9 +169,53 @@
 
     </main>
 
+    <!-- Settings Modal (الإعدادات والخصوصية والوضع الداكن/الفاتح) -->
+    <div id="settingsModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="glass-card rounded-3xl p-5 max-w-sm w-full space-y-4">
+            <div class="flex justify-between items-center border-b border-white/10 pb-2">
+                <h3 class="text-sm font-black text-white flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-blue-400"></i> الإعدادات والخصوصية
+                </h3>
+                <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Theme Mode Toggle -->
+            <div class="space-y-2">
+                <label class="text-xs font-bold text-gray-300 block">مظهر التطبيق</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setTheme('dark')" id="darkThemeBtn" class="bg-blue-600 text-white py-2 rounded-xl text-xs font-bold border border-blue-500 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-moon"></i> الوضع الداكن
+                    </button>
+                    <button onclick="setTheme('light')" id="lightThemeBtn" class="bg-gray-800 text-gray-300 py-2 rounded-xl text-xs font-bold border border-white/10 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-sun text-amber-400"></i> الوضع الفاتح
+                    </button>
+                </div>
+            </div>
+
+            <!-- Privacy Controls -->
+            <div class="space-y-2 pt-2 border-t border-white/10">
+                <label class="text-xs font-bold text-gray-300 block">إعدادات الخصوصية</label>
+                <div class="space-y-2 text-xs text-gray-300">
+                    <label class="flex items-center justify-between p-2 rounded-xl bg-black/20">
+                        <span>إظهار النبذة التعريفية للجميع</span>
+                        <input type="checkbox" id="showBioToggle" checked onchange="togglePrivacySetting('showBio')" class="accent-blue-500 w-4 h-4">
+                    </label>
+                    <label class="flex items-center justify-between p-2 rounded-xl bg-black/20">
+                        <span>إغلاق الحساب (خاص)</span>
+                        <input type="checkbox" id="privateAccountToggle" onchange="togglePrivacySetting('isPrivate')" class="accent-blue-500 w-4 h-4">
+                    </label>
+                </div>
+            </div>
+
+            <button onclick="closeSettingsModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl text-xs font-bold">
+                حفظ وإغلاق
+            </button>
+        </div>
+    </div>
+
     <!-- Profile Edit Modal -->
     <div id="profileModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
-        <div class="glass-card rounded-3xl p-5 max-w-sm w-full space-y-4 border-white/20">
+        <div class="glass-card rounded-3xl p-5 max-w-sm w-full space-y-4">
             <h3 class="text-sm font-black text-white text-center">تعديل الملف الشخصي</h3>
             
             <div class="space-y-3">
@@ -188,7 +236,7 @@
         </div>
     </div>
 
-    <!-- Dev Auth Modal -->
+    <!-- Dev Auth Modal (الوصول الخاص) -->
     <div id="devAuthModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="glass-card rounded-3xl p-5 max-w-xs w-full text-center space-y-3 border-red-500/40">
             <i class="fa-solid fa-shield-halved text-red-500 text-3xl"></i>
@@ -201,12 +249,17 @@
         </div>
     </div>
 
-    <!-- Developer Control Center -->
-    <div id="devDashboard" class="hidden fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 z-50">
-        <div class="glass-card rounded-3xl p-4 max-w-lg w-full h-[80vh] flex flex-col space-y-3 border-red-500/40">
+    <!-- Developer Control Center (مع خلفية فيديو متحركة) -->
+    <div id="devDashboard" class="hidden fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 z-50 overflow-hidden">
+        <!-- فيديو النيون المتحرك في خلفية لوحة المطور -->
+        <video class="dev-video-bg" autoplay loop muted playsinline>
+            <source src="https://files.catbox.moe/dglmga.mp4" type="video/mp4">
+        </video>
+
+        <div class="glass-card relative z-10 rounded-3xl p-4 max-w-lg w-full h-[82vh] flex flex-col space-y-3 border-red-500/50 shadow-2xl">
             <div class="flex justify-between items-center border-b border-white/10 pb-2">
                 <span class="text-xs font-bold text-red-400 flex items-center gap-1.5">
-                    <i class="fa-solid fa-user-shield"></i> لوحة التحكم والإدارة العامة
+                    <i class="fa-solid fa-user-shield animate-pulse"></i> لوحة التحكم والإدارة العامة
                 </span>
                 <button onclick="closeDevDash()" class="text-gray-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
@@ -217,13 +270,16 @@
 
     <!-- JS Logic -->
     <script>
-        let users = JSON.parse(localStorage.getItem('taeha_v3_users') || "{}");
-        let posts = JSON.parse(localStorage.getItem('taeha_v3_posts') || "[]");
-        let bannedUsers = JSON.parse(localStorage.getItem('taeha_v3_banned') || "[]");
+        let users = JSON.parse(localStorage.getItem('taeha_v4_users') || "{}");
+        let posts = JSON.parse(localStorage.getItem('taeha_v4_posts') || "[]");
+        let bannedUsers = JSON.parse(localStorage.getItem('taeha_v4_banned') || "[]");
+        let settings = JSON.parse(localStorage.getItem('taeha_v4_settings') || '{"theme":"dark","showBio":true,"isPrivate":false}');
         let currentUser = null;
 
-        // Auto Login (Remember Me)
+        // Apply Theme on Load
         window.addEventListener('DOMContentLoaded', () => {
+            applyTheme(settings.theme);
+
             const remembered = localStorage.getItem('taeha_remembered_user');
             if (remembered && users[remembered] && !bannedUsers.includes(remembered)) {
                 autoLogin(remembered);
@@ -274,7 +330,7 @@
             const u = users[currentUser];
             document.getElementById('userAvatarHeader').src = u.avatar;
             document.getElementById('userNameHeader').innerText = currentUser;
-            document.getElementById('userBioHeader').innerText = u.bio;
+            document.getElementById('userBioHeader').innerText = settings.showBio ? u.bio : '';
 
             const badge = document.getElementById('userBadgeHeader');
             if (u.isVerified) {
@@ -338,7 +394,7 @@
             }).join('');
         }
 
-        function copyCode(btn) {
+            function copyCode(btn) {
             const code = btn.parentElement.nextElementSibling.nextElementSibling.innerText;
             navigator.clipboard.writeText(code);
             btn.innerHTML = `<i class="fa-solid fa-check ml-1 text-emerald-400"></i>تم النسخ`;
@@ -349,6 +405,40 @@
 
         function escapeHtml(text) {
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Settings Modal & Theme Switcher
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+            document.getElementById('showBioToggle').checked = settings.showBio;
+            document.getElementById('privateAccountToggle').checked = settings.isPrivate;
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function setTheme(mode) {
+            settings.theme = mode;
+            saveData();
+            applyTheme(mode);
+        }
+
+        function applyTheme(mode) {
+            if (mode === 'light') {
+                document.body.classList.remove('dark-mode');
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        function togglePrivacySetting(key) {
+            if (key === 'showBio') settings.showBio = document.getElementById('showBioToggle').checked;
+            if (key === 'isPrivate') settings.isPrivate = document.getElementById('privateAccountToggle').checked;
+            saveData();
+            if (currentUser) updateProfileHeader();
         }
 
         // Profile Modal
@@ -375,13 +465,13 @@
             closeProfileModal();
         }
 
-        // Dev Auth (كود سرّي مشفر)
+        // Dev Auth & Verification (رمز سرّي مُشفر TAEHADEV)
         function openDevAuth() { document.getElementById('devAuthModal').classList.remove('hidden'); }
         function closeDevAuth() { document.getElementById('devAuthModal').classList.add('hidden'); }
 
         function verifyDev() {
             const input = document.getElementById('devKeyInput').value.trim();
-            // الكود السرّي المُشفر (TAEHADEV)
+            // الرمز السرّي المشفر (TAEHADEV)
             if (btoa(input) === "VEFFSEFERVY=") {
                 closeDevAuth();
                 openDevDash();
@@ -438,9 +528,10 @@
         }
 
         function saveData() {
-            localStorage.setItem('taeha_v3_users', JSON.stringify(users));
-            localStorage.setItem('taeha_v3_posts', JSON.stringify(posts));
-            localStorage.setItem('taeha_v3_banned', JSON.stringify(bannedUsers));
+            localStorage.setItem('taeha_v4_users', JSON.stringify(users));
+            localStorage.setItem('taeha_v4_posts', JSON.stringify(posts));
+            localStorage.setItem('taeha_v4_banned', JSON.stringify(bannedUsers));
+            localStorage.setItem('taeha_v4_settings', JSON.stringify(settings));
         }
     </script>
 </body>
