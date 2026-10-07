@@ -3,249 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taeha Panel | منصة الأكواد والمطورين</title>
+    <title>Taeha Panel | منصة المطورين</title>
     
-    <!-- CSS & Icons -->
+    <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #0d1117; color: #c9d1d9; }
-        .glass { background: rgba(22, 27, 34, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .dev-glass { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(239, 68, 68, 0.4); }
+        body { font-family: 'Cairo', sans-serif; background-color: #0d1117; color: #e6edf3; }
+        .card { background-color: #161b22; border: 1px solid #30363d; }
+        .input-style { background-color: #0d1117; border: 1px solid #30363d; color: #fff; }
+        .input-style:focus { border-color: #58a6ff; outline: none; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-3 select-none">
+<body class="min-h-screen flex flex-col justify-between pb-16 md:pb-0 select-none">
 
-    <!-- Header Navigation -->
-    <header class="w-full max-w-5xl mx-auto glass rounded-2xl p-3.5 flex justify-between items-center z-10 shadow-2xl">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                <i class="fa-solid fa-code"></i>
+    <!-- Navbar -->
+    <header class="w-full bg-[#161b22] border-b border-[#30363d] sticky top-0 z-30 p-3">
+        <div class="max-w-3xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <span class="font-extrabold text-sm md:text-base text-white">Taeha Panel</span>
             </div>
-            <div>
-                <h1 class="font-black text-base text-white">Taeha Panel</h1>
-                <p class="text-xs text-blue-400 font-bold" id="userDisplay">غير مسجل الدخول</p>
-            </div>
-        </div>
 
-        <div class="flex gap-2">
-            <button id="profileBtn" onclick="openProfileModal()" class="hidden bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-                <i class="fa-solid fa-user-pen"></i> الملف الشخصي
-            </button>
-            <button onclick="openDevAuth()" class="bg-red-600/20 hover:bg-red-600/40 text-red-400 border border-red-500/40 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-                <i class="fa-solid fa-shield-halved"></i> لوحة المطور
-            </button>
-            <button id="logoutBtn" onclick="logout()" class="hidden bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-xl text-xs font-bold">خروج</button>
+            <div class="flex items-center gap-2">
+                <button onclick="openDevAuth()" class="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>المطور</span>
+                </button>
+                <button id="logoutBtn" onclick="logout()" class="hidden text-xs bg-gray-800 text-gray-300 px-2.5 py-1.5 rounded-lg font-bold">خروج</button>
+            </div>
         </div>
     </header>
 
-    <!-- Main Workspace -->
-    <main class="w-full max-w-5xl mx-auto my-4 flex-1 flex flex-col items-center">
+    <!-- Main Container -->
+    <main class="max-w-2xl w-full mx-auto p-3 flex-1">
         
-        <!-- Auth Screen -->
-        <div id="authScreen" class="w-full max-w-sm glass rounded-3xl p-6 shadow-2xl space-y-4 text-center my-auto border border-blue-500/30">
-            <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-600/20 text-blue-400 border border-blue-500/40 flex items-center justify-center text-3xl">
-                <i class="fa-solid fa-terminal"></i>
+        <!-- Login Screen -->
+        <div id="authScreen" class="card rounded-2xl p-5 my-10 max-w-sm mx-auto space-y-4 shadow-xl">
+            <div class="text-center space-y-1">
+                <h2 class="text-lg font-black text-white">تسجيل الدخول</h2>
+                <p class="text-xs text-gray-400">منصة نشر الأكواد والمشاريع البرمجية</p>
             </div>
-            <h2 class="text-xl font-black text-white">تسجيل الدخول | Taeha Panel</h2>
-            <p class="text-xs text-gray-400">ادخل اسمك للانضمام لمجتمع مشاركة الأكواد</p>
 
-            <input type="text" id="usernameInput" placeholder="اسم المستخدم" class="w-full bg-[#0d1117] border border-gray-700 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500">
-            <input type="password" id="passwordInput" placeholder="كلمة المرور" class="w-full bg-[#0d1117] border border-gray-700 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500">
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[11px] text-gray-400 mb-1 block">اسم المستخدم</label>
+                    <input type="text" id="usernameInput" placeholder="ادخل اسمك" class="w-full input-style rounded-xl px-3 py-2 text-xs">
+                </div>
+                <div>
+                    <label class="text-[11px] text-gray-400 mb-1 block">كلمة المرور</label>
+                    <input type="password" id="passwordInput" placeholder="******" class="w-full input-style rounded-xl px-3 py-2 text-xs">
+                </div>
 
-            <button onclick="loginPlayer()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-extrabold py-3 rounded-xl text-xs shadow-lg transition">
-                دخول المنصة
-            </button>
+                <div class="flex items-center gap-2 pt-1">
+                    <input type="checkbox" id="rememberMe" class="rounded accent-blue-500 w-4 h-4 cursor-pointer">
+                    <label for="rememberMe" class="text-xs text-gray-300 cursor-pointer">تذكرني على هذا الجهاز</label>
+                </div>
+
+                <button onclick="loginUser()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs transition">
+                    دخول المنصة
+                </button>
+            </div>
         </div>
 
-        <!-- Dashboard Content (Posts & Codes Stream) -->
-        <div id="panelContent" class="w-full hidden space-y-4">
+        <!-- Dashboard Content -->
+        <div id="appContent" class="hidden space-y-4">
             
-            <!-- Create Post Box -->
-            <div class="glass rounded-2xl p-4 border border-gray-800 space-y-3">
-                <h3 class="text-xs font-bold text-gray-300 flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-blue-400"></i> نشر كود أو مشروع جديد:
-                </h3>
-                <input type="text" id="postTitle" placeholder="عنوان الكود / المشروع" class="w-full bg-[#0d1117] border border-gray-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-blue-500">
-                <textarea id="postCode" rows="4" placeholder="ضع الكود هنا..." class="w-full bg-[#0d1117] border border-gray-700 rounded-xl p-2.5 text-xs font-mono focus:outline-none focus:border-blue-500"></textarea>
-                <button onclick="createPost()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-xl text-xs font-bold transition">
-                    نشر الكود 🚀
+            <!-- User Profile Bar -->
+            <div class="card rounded-2xl p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img id="userAvatarHeader" src="" class="w-11 h-11 rounded-full object-cover border border-gray-700">
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <h3 id="userNameHeader" class="font-extrabold text-sm text-white"></h3>
+                            <span id="userBadgeHeader"></span>
+                        </div>
+                        <p id="userBioHeader" class="text-[11px] text-gray-400 leading-tight mt-0.5"></p>
+                    </div>
+                </div>
+                <button onclick="openProfileModal()" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 border border-gray-700">
+                    <i class="fa-solid fa-user-pen"></i>
+                    <span>تعديل</span>
+                </button>
+            </div>
+
+            <!-- New Post Publisher -->
+            <div class="card rounded-2xl p-4 space-y-3">
+                <span class="text-xs font-bold text-gray-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-code text-blue-400"></i> نشر كود جديد:
+                </span>
+                <input type="text" id="postTitle" placeholder="عنوان الكود (مثال: اسكريبت بوت واتساب)" class="w-full input-style rounded-xl p-2.5 text-xs">
+                <textarea id="postCode" rows="3" placeholder="ضع الكود هنا..." class="w-full input-style rounded-xl p-2.5 text-xs font-mono"></textarea>
+                <button onclick="publishPost()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-xl text-xs transition">
+                    نشر الكود
                 </button>
             </div>
 
             <!-- Feed Stream -->
-            <div class="space-y-3" id="postsFeed"></div>
+            <div id="postsFeed" class="space-y-3"></div>
         </div>
 
     </main>
 
     <!-- Profile Edit Modal -->
     <div id="profileModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-[#161b22] border border-gray-800 rounded-3xl p-6 max-w-sm w-full space-y-4 text-center">
-            <h3 class="text-base font-bold text-white">تعديل الملف الشخصي</h3>
-            <div class="relative w-20 h-20 mx-auto">
-                <img id="profileAvatarPreview" src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=200&auto=format&fit=crop" class="w-full h-full rounded-full object-cover border-2 border-blue-500">
+        <div class="card rounded-2xl p-5 max-w-sm w-full space-y-4">
+            <h3 class="text-sm font-bold text-white text-center">تعديل الملف الشخصي</h3>
+            
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[11px] text-gray-400 mb-1 block">رابط صورة البروفايل (Image URL)</label>
+                    <input type="text" id="editAvatarInput" class="w-full input-style rounded-xl p-2 text-xs">
+                </div>
+                <div>
+                    <label class="text-[11px] text-gray-400 mb-1 block">النبذة التعريفية (Bio)</label>
+                    <textarea id="editBioInput" rows="2" class="w-full input-style rounded-xl p-2 text-xs"></textarea>
+                </div>
             </div>
-            <input type="text" id="avatarUrlInput" placeholder="رابط صورة الملف الشخصي (URL)" class="w-full bg-[#0d1117] border border-gray-700 rounded-xl p-2.5 text-xs focus:outline-none">
-            <textarea id="bioInput" rows="2" placeholder="النبذة التعريفية (Bio)" class="w-full bg-[#0d1117] border border-gray-700 rounded-xl p-2.5 text-xs focus:outline-none"></textarea>
+
             <div class="flex gap-2">
                 <button onclick="closeProfileModal()" class="w-1/2 bg-gray-800 text-gray-300 py-2 rounded-xl text-xs font-bold">إلغاء</button>
-                <button onclick="saveProfile()" class="w-1/2 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-xl text-xs font-bold">حفظ التغيرات</button>
+                <button onclick="saveProfile()" class="w-1/2 bg-blue-600 text-white py-2 rounded-xl text-xs font-bold">حفظ التغييرات</button>
             </div>
         </div>
     </div>
 
-    <!-- Dev Auth Password Modal -->
+    <!-- Dev Auth Modal -->
     <div id="devAuthModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-[#161b22] border border-red-500/40 rounded-2xl p-6 max-w-sm w-full text-center space-y-4">
-            <i class="fa-solid fa-shield-halved text-red-500 text-4xl mb-2"></i>
-            <h3 class="text-base font-bold text-white">دخول المطورين (TAEHADEV)</h3>
-            <input type="password" id="devKeyInput" placeholder="DEV KEY" class="w-full bg-black border border-red-500/30 rounded-xl p-2.5 text-center font-mono text-red-400 uppercase font-bold text-xs focus:outline-none">
+        <div class="card rounded-2xl p-5 max-w-xs w-full text-center space-y-3 border-red-500/40">
+            <i class="fa-solid fa-shield-halved text-red-500 text-3xl"></i>
+            <h3 class="text-xs font-bold text-white">دخول المطورين (TAEHADEV)</h3>
+            <input type="password" id="devKeyInput" placeholder="DEV KEY" class="w-full input-style text-center font-mono text-red-400 rounded-xl p-2 text-xs uppercase">
             <div class="flex gap-2">
                 <button onclick="closeDevAuth()" class="w-1/2 bg-gray-800 text-gray-300 py-2 rounded-xl text-xs font-bold">إلغاء</button>
-                <button onclick="verifyDev()" class="w-1/2 bg-red-600 hover:bg-red-500 text-white py-2 rounded-xl text-xs font-bold">تأكيد الدخول</button>
+                <button onclick="verifyDev()" class="w-1/2 bg-red-600 text-white py-2 rounded-xl text-xs font-bold">تأكيد</button>
             </div>
         </div>
     </div>
 
-    <!-- Developer Dashboard Control Panel -->
-    <div id="devDashboard" class="hidden fixed inset-0 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 z-50">
-        <div class="dev-glass rounded-3xl p-6 max-w-4xl w-full h-[85vh] flex flex-col space-y-4">
-            <div class="flex justify-between items-center border-b border-red-500/20 pb-3">
-                <div class="flex items-center gap-2 text-red-400 font-bold text-base">
-                    <i class="fa-solid fa-user-shield"></i> لوحة إدارة المطورين | Taeha Panel
-                </div>
-                <button onclick="closeDevDash()" class="text-gray-400 hover:text-white text-2xl"><i class="fa-solid fa-xmark"></i></button>
+    <!-- Developer Control Center -->
+    <div id="devDashboard" class="hidden fixed inset-0 bg-black/95 backdrop-blur-md flex items-center justify-center p-4 z-50">
+        <div class="card rounded-2xl p-4 max-w-lg w-full h-[80vh] flex flex-col space-y-3 border-red-500/30">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-2">
+                <span class="text-xs font-bold text-red-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-shield"></i> لوحة تحكم المطور TAEHADEV
+                </span>
+                <button onclick="closeDevDash()" class="text-gray-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <div class="flex-1 overflow-y-auto space-y-3 pr-1" id="devUsersList">
-                <!-- User verification & controls generated here -->
-            </div>
+            <div id="devUsersList" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
         </div>
     </div>
 
     <!-- JS Logic -->
     <script>
-        const DEV_KEY = "TAEHADEV"; // كود المطور الخاص بك
+        const DEV_KEY = "TAEHADEV";
 
-        let users = JSON.parse(localStorage.getItem('taeha_users') || "{}");
-        let posts = JSON.parse(localStorage.getItem('taeha_posts') || "[]");
-        let bannedUsers = JSON.parse(localStorage.getItem('taeha_banned') || "[]");
+        let users = JSON.parse(localStorage.getItem('taeha_v2_users') || "{}");
+        let posts = JSON.parse(localStorage.getItem('taeha_v2_posts') || "[]");
+        let bannedUsers = JSON.parse(localStorage.getItem('taeha_v2_banned') || "[]");
         let currentUser = null;
 
-        function loginPlayer() {
-            const user = document.getElementById('usernameInput').value.trim();
-            if (!user) return alert('أدخل اسم المستخدم!');
-
-            if (bannedUsers.includes(user)) {
-                return alert('⚠️ هذا الحساب مطرود ومحظور من قِبل المطور!');
+        // Auto Login (Remember Me)
+        window.addEventListener('DOMContentLoaded', () => {
+            const remembered = localStorage.getItem('taeha_remembered_user');
+            if (remembered && users[remembered] && !bannedUsers.includes(remembered)) {
+                autoLogin(remembered);
             }
+        });
 
-            currentUser = user;
+        function loginUser() {
+            const user = document.getElementById('usernameInput').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            if (!user) return alert('يرجى إدخال اسم المستخدم!');
+            if (bannedUsers.includes(user)) return alert('⚠️ هذا الحساب مطرود من قِبل المطور!');
+
             if (!users[user]) {
                 users[user] = {
                     isVerified: false,
                     avatar: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=200&auto=format&fit=crop',
-                    bio: 'مطور في Taeha Panel'
+                    bio: 'مطور برمجيات في Taeha Panel'
                 };
-                saveState();
+                saveData();
             }
 
-            updateUserDisplay();
+            if (rememberMe) {
+                localStorage.setItem('taeha_remembered_user', user);
+            } else {
+                localStorage.removeItem('taeha_remembered_user');
+            }
+
+            autoLogin(user);
+        }
+
+        function autoLogin(username) {
+            currentUser = username;
             document.getElementById('authScreen').classList.add('hidden');
-            document.getElementById('panelContent').classList.remove('hidden');
-            document.getElementById('profileBtn').classList.remove('hidden');
+            document.getElementById('appContent').classList.remove('hidden');
             document.getElementById('logoutBtn').classList.remove('hidden');
 
+            updateProfileHeader();
             renderPosts();
         }
 
-        function logout() { location.reload(); }
-
-        function updateUserDisplay() {
-            const isVer = users[currentUser]?.isVerified;
-            document.getElementById('userDisplay').innerHTML = `
-                ${currentUser} ${isVer ? '<i class="fa-solid fa-circle-check text-blue-400 ml-1" title="مطور موثق"></i>' : ''}
-            `;
+        function logout() {
+            localStorage.removeItem('taeha_remembered_user');
+            location.reload();
         }
 
-        function createPost() {
+        function updateProfileHeader() {
+            const u = users[currentUser];
+            document.getElementById('userAvatarHeader').src = u.avatar;
+            document.getElementById('userNameHeader').innerText = currentUser;
+            document.getElementById('userBioHeader').innerText = u.bio;
+
+            const badge = document.getElementById('userBadgeHeader');
+            if (u.isVerified) {
+                badge.innerHTML = `<i class="fa-solid fa-circle-check text-blue-400 text-xs" title="حساب موثق"></i>`;
+            } else {
+                badge.innerHTML = '';
+            }
+        }
+
+        function publishPost() {
             const title = document.getElementById('postTitle').value.trim();
             const code = document.getElementById('postCode').value.trim();
 
-            if (!title || !code) return alert('يرجى ملء العنوان والكود!');
+            if (!title || !code) return alert('يرجى كتابة العنوان والكود!');
 
             posts.unshift({
                 id: Date.now(),
                 author: currentUser,
                 title: title,
                 code: code,
-                date: new Date().toLocaleTimeString('ar-EG')
+                date: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })
             });
 
             document.getElementById('postTitle').value = '';
             document.getElementById('postCode').value = '';
-            saveState();
+
+            saveData();
             renderPosts();
         }
 
         function renderPosts() {
             const feed = document.getElementById('postsFeed');
             if (posts.length === 0) {
-                feed.innerHTML = `<p class="text-center text-gray-500 text-xs py-8">لا توجد أكواد منشورات بعد...</p>`;
+                feed.innerHTML = `<p class="text-center text-gray-500 text-xs py-6">لا توجد منشورات بعد...</p>`;
                 return;
             }
 
             feed.innerHTML = posts.map(p => {
                 const u = users[p.author] || {};
                 return `
-                    <div class="glass rounded-2xl p-4 border border-gray-800 space-y-3">
+                    <div class="card rounded-2xl p-4 space-y-2.5">
                         <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <img src="${u.avatar}" class="w-8 h-8 rounded-full object-cover">
+                            <div class="flex items-center gap-2">
+                                <img src="${u.avatar || ''}" class="w-8 h-8 rounded-full object-cover">
                                 <div>
-                                    <span class="text-xs font-bold text-white flex items-center gap-1">
-                                        ${p.author}
-                                        ${u.isVerified ? '<i class="fa-solid fa-circle-check text-blue-400"></i>' : ''}
-                                    </span>
-                                    <p class="text-[10px] text-gray-500">${p.date}</p>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-xs font-bold text-white">${p.author}</span>
+                                        ${u.isVerified ? '<i class="fa-solid fa-circle-check text-blue-400 text-[11px]"></i>' : ''}
+                                    </div>
+                                    <span class="text-[10px] text-gray-500">${p.date}</span>
                                 </div>
                             </div>
+                            <button onclick="copyCode(this)" class="text-[11px] bg-gray-800 hover:bg-gray-700 text-gray-300 px-2.5 py-1 rounded-lg border border-gray-700">
+                                <i class="fa-regular fa-copy ml-1"></i>نسخ
+                            </button>
                         </div>
                         <h4 class="text-xs font-bold text-blue-400">${p.title}</h4>
-                        <pre class="bg-black/60 p-3 rounded-xl font-mono text-xs text-emerald-400 overflow-x-auto border border-gray-800">${escapeHtml(p.code)}</pre>
+                        <pre class="bg-black/70 p-3 rounded-xl font-mono text-xs text-emerald-400 overflow-x-auto border border-gray-800/80">${escapeHtml(p.code)}</pre>
                     </div>
                 `;
             }).join('');
+        }
+
+        function copyCode(btn) {
+            const code = btn.parentElement.nextElementSibling.nextElementSibling.innerText;
+            navigator.clipboard.writeText(code);
+            btn.innerHTML = `<i class="fa-solid fa-check ml-1 text-emerald-400"></i>تم النسخ`;
+            setTimeout(() => {
+                btn.innerHTML = `<i class="fa-regular fa-copy ml-1"></i>نسخ`;
+            }, 2000);
         }
 
         function escapeHtml(text) {
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        // Profile Modal Logic
+        // Profile Modal
         function openProfileModal() {
             document.getElementById('profileModal').classList.remove('hidden');
-            document.getElementById('avatarUrlInput').value = users[currentUser].avatar;
-            document.getElementById('bioInput').value = users[currentUser].bio;
+            document.getElementById('editAvatarInput').value = users[currentUser].avatar;
+            document.getElementById('editBioInput').value = users[currentUser].bio;
         }
-        function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
 
         function saveProfile() {
-            const url = document.getElementById('avatarUrlInput').value.trim();
-            const bio = document.getElementById('bioInput').value.trim();
+            const avatar = document.getElementById('editAvatarInput').value.trim();
+            const bio = document.getElementById('editBioInput').value.trim();
 
-            if (url) users[currentUser].avatar = url;
+            if (avatar) users[currentUser].avatar = avatar;
             if (bio) users[currentUser].bio = bio;
 
-            saveState();
-            closeProfileModal();
+            saveData();
+            updateProfileHeader();
             renderPosts();
+            closeProfileModal();
         }
 
-        // Dev Controls
+        // Dev Dashboard
         function openDevAuth() { document.getElementById('devAuthModal').classList.remove('hidden'); }
         function closeDevAuth() { document.getElementById('devAuthModal').classList.add('hidden'); }
 
@@ -268,48 +344,48 @@
 
         function toggleVerify(username) {
             users[username].isVerified = !users[username].isVerified;
-            saveState();
+            saveData();
             renderDevUsers();
-            if (currentUser === username) updateUserDisplay();
+            if (currentUser === username) updateProfileHeader();
             renderPosts();
         }
 
         function kickUser(username) {
-            if (confirm(`هل أنت متأكد من طرد وتأطير الحساب "${username}"؟`)) {
+            if (confirm(`طرد الحساب "${username}"؟`)) {
                 bannedUsers.push(username);
-                saveState();
+                saveData();
                 renderDevUsers();
-                if (currentUser === username) location.reload();
+                if (currentUser === username) logout();
             }
         }
 
         function renderDevUsers() {
             const container = document.getElementById('devUsersList');
-            const allUsers = Object.keys(users);
+            const list = Object.keys(users);
 
-            container.innerHTML = allUsers.map(u => `
-                <div class="p-3 bg-[#0d1117] rounded-xl border border-gray-800 flex justify-between items-center text-xs">
+            container.innerHTML = list.map(u => `
+                <div class="card p-2.5 rounded-xl flex items-center justify-between text-xs">
                     <div class="flex items-center gap-2">
                         <img src="${users[u].avatar}" class="w-7 h-7 rounded-full object-cover">
                         <span class="font-bold text-white">${u}</span>
-                        ${users[u].isVerified ? '<span class="text-blue-400 font-bold">(موثق <i class="fa-solid fa-circle-check"></i>)</span>' : ''}
+                        ${users[u].isVerified ? '<i class="fa-solid fa-circle-check text-blue-400"></i>' : ''}
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="toggleVerify('${u}')" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-2.5 py-1 rounded-lg border border-blue-500/40">
-                            ${users[u].isVerified ? 'إزالة التوثيق' : 'منح العلامة الزرقاء 💙'}
+                    <div class="flex gap-1.5">
+                        <button onclick="toggleVerify('${u}')" class="bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white px-2 py-1 rounded-lg text-[11px] font-bold border border-blue-500/30">
+                            ${users[u].isVerified ? 'إزالة التوثيق' : 'توثيق 💙'}
                         </button>
-                        <button onclick="kickUser('${u}')" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-2.5 py-1 rounded-lg border border-red-500/40">
-                            طرد (Kick)
+                        <button onclick="kickUser('${u}')" class="bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white px-2 py-1 rounded-lg text-[11px] font-bold border border-red-500/30">
+                            طرد
                         </button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function saveState() {
-            localStorage.setItem('taeha_users', JSON.stringify(users));
-            localStorage.setItem('taeha_posts', JSON.stringify(posts));
-            localStorage.setItem('taeha_banned', JSON.stringify(bannedUsers));
+        function saveData() {
+            localStorage.setItem('taeha_v2_users', JSON.stringify(users));
+            localStorage.setItem('taeha_v2_posts', JSON.stringify(posts));
+            localStorage.setItem('taeha_v2_banned', JSON.stringify(bannedUsers));
         }
     </script>
 </body>
