@@ -56,21 +56,31 @@
             outline: none;
         }
 
-        /* خلفية الفيديو الخاصة بلوحة المطور */
-        .dev-video-bg {
-            position: absolute;
+        /* خلفية الفيديو العامة والمتحركة */
+        .global-video-bg, .dev-video-bg {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             object-fit: cover;
+            z-index: -1;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+        .dev-video-bg {
+            position: absolute;
             z-index: 0;
             opacity: 0.35;
-            pointer-events: none;
         }
     </style>
 </head>
-<body class="dark-mode min-h-screen flex flex-col justify-between pb-16 md:pb-0 select-none">
+<body class="dark-mode min-h-screen flex flex-col justify-between pb-16 md:pb-0 select-none relative">
+
+    <!-- فيديو الخلفية العام (يتم التحكم فيه من الإعدادات) -->
+    <video id="bgGlobalVideo" class="global-video-bg hidden" autoplay loop muted playsinline>
+        <source src="https://files.catbox.moe/dglmga.mp4" type="video/mp4">
+    </video>
 
     <!-- Navbar -->
     <header class="w-full glass-card sticky top-0 z-30 p-3 border-b">
@@ -169,7 +179,7 @@
 
     </main>
 
-    <!-- Settings Modal (الإعدادات والخصوصية والوضع الداكن/الفاتح) -->
+    <!-- Settings Modal (الإعدادات والخصوصية والتحكم بفيديو الخلفية) -->
     <div id="settingsModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="glass-card rounded-3xl p-5 max-w-sm w-full space-y-4">
             <div class="flex justify-between items-center border-b border-white/10 pb-2">
@@ -190,6 +200,17 @@
                         <i class="fa-solid fa-sun text-amber-400"></i> الوضع الفاتح
                     </button>
                 </div>
+            </div>
+
+            <!-- Video Background Switch -->
+            <div class="space-y-2 pt-2 border-t border-white/10">
+                <label class="text-xs font-bold text-gray-300 block">خلفية التطبيق</label>
+                <label class="flex items-center justify-between p-2.5 rounded-xl bg-black/30 border border-white/5 cursor-pointer">
+                    <span class="text-xs text-gray-200 font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-film text-purple-400"></i> تفعيل فيديو الخلفية المتحرك
+                    </span>
+                    <input type="checkbox" id="videoBgToggle" onchange="toggleVideoBackground()" class="accent-blue-500 w-4 h-4 cursor-pointer">
+                </label>
             </div>
 
             <!-- Privacy Controls -->
@@ -236,7 +257,7 @@
         </div>
     </div>
 
-    <!-- Dev Auth Modal (الوصول الخاص) -->
+    <!-- Dev Auth Modal -->
     <div id="devAuthModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50">
         <div class="glass-card rounded-3xl p-5 max-w-xs w-full text-center space-y-3 border-red-500/40">
             <i class="fa-solid fa-shield-halved text-red-500 text-3xl"></i>
@@ -249,9 +270,8 @@
         </div>
     </div>
 
-    <!-- Developer Control Center (مع خلفية فيديو متحركة) -->
+    <!-- Developer Control Center -->
     <div id="devDashboard" class="hidden fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 z-50 overflow-hidden">
-        <!-- فيديو النيون المتحرك في خلفية لوحة المطور -->
         <video class="dev-video-bg" autoplay loop muted playsinline>
             <source src="https://files.catbox.moe/dglmga.mp4" type="video/mp4">
         </video>
@@ -270,15 +290,15 @@
 
     <!-- JS Logic -->
     <script>
-        let users = JSON.parse(localStorage.getItem('taeha_v4_users') || "{}");
-        let posts = JSON.parse(localStorage.getItem('taeha_v4_posts') || "[]");
-        let bannedUsers = JSON.parse(localStorage.getItem('taeha_v4_banned') || "[]");
-        let settings = JSON.parse(localStorage.getItem('taeha_v4_settings') || '{"theme":"dark","showBio":true,"isPrivate":false}');
+        let users = JSON.parse(localStorage.getItem('taeha_v5_users') || "{}");
+        let posts = JSON.parse(localStorage.getItem('taeha_v5_posts') || "[]");
+        let bannedUsers = JSON.parse(localStorage.getItem('taeha_v5_banned') || "[]");
+        let settings = JSON.parse(localStorage.getItem('taeha_v5_settings') || '{"theme":"dark","showBio":true,"isPrivate":false,"enableVideoBg":false}');
         let currentUser = null;
 
-        // Apply Theme on Load
         window.addEventListener('DOMContentLoaded', () => {
             applyTheme(settings.theme);
+            applyVideoBg(settings.enableVideoBg);
 
             const remembered = localStorage.getItem('taeha_remembered_user');
             if (remembered && users[remembered] && !bannedUsers.includes(remembered)) {
@@ -377,24 +397,8 @@
                                 <img src="${u.avatar || ''}" class="w-8 h-8 rounded-full object-cover">
                                 <div>
                                     <div class="flex items-center gap-1">
-                                        <span class="text-xs font-bold text-white">${p.author}</span>
-                                        ${u.isVerified ? '<i class="fa-solid fa-circle-check text-blue-400 text-[11px]"></i>' : ''}
-                                    </div>
-                                    <span class="text-[10px] text-gray-400">${p.date}</span>
-                                </div>
-                            </div>
-                            <button onclick="copyCode(this)" class="text-[11px] bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white px-2.5 py-1 rounded-lg border border-blue-500/30 font-bold transition">
-                                <i class="fa-regular fa-copy ml-1"></i>نسخ
-                            </button>
-                        </div>
-                        <h4 class="text-xs font-bold text-blue-400">${p.title}</h4>
-                        <pre class="bg-black/70 p-3 rounded-xl font-mono text-xs text-emerald-400 overflow-x-auto border border-white/10">${escapeHtml(p.code)}</pre>
-                    </div>
-                `;
-            }).join('');
-        }
-
-            function copyCode(btn) {
+                                        <span class="text-xs fo
+        function copyCode(btn) {
             const code = btn.parentElement.nextElementSibling.nextElementSibling.innerText;
             navigator.clipboard.writeText(code);
             btn.innerHTML = `<i class="fa-solid fa-check ml-1 text-emerald-400"></i>تم النسخ`;
@@ -407,15 +411,32 @@
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
-        // Settings Modal & Theme Switcher
+        // Settings Modal, Theme & Video BG Switcher
         function openSettingsModal() {
             document.getElementById('settingsModal').classList.remove('hidden');
             document.getElementById('showBioToggle').checked = settings.showBio;
             document.getElementById('privateAccountToggle').checked = settings.isPrivate;
+            document.getElementById('videoBgToggle').checked = settings.enableVideoBg;
         }
 
         function closeSettingsModal() {
             document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function toggleVideoBackground() {
+            const enabled = document.getElementById('videoBgToggle').checked;
+            settings.enableVideoBg = enabled;
+            saveData();
+            applyVideoBg(enabled);
+        }
+
+        function applyVideoBg(enabled) {
+            const videoElem = document.getElementById('bgGlobalVideo');
+            if (enabled) {
+                videoElem.classList.remove('hidden');
+            } else {
+                videoElem.classList.add('hidden');
+            }
         }
 
         function setTheme(mode) {
@@ -465,13 +486,12 @@
             closeProfileModal();
         }
 
-        // Dev Auth & Verification (رمز سرّي مُشفر TAEHADEV)
+        // Dev Auth (كود سرّي مُشفر TAEHADEV)
         function openDevAuth() { document.getElementById('devAuthModal').classList.remove('hidden'); }
         function closeDevAuth() { document.getElementById('devAuthModal').classList.add('hidden'); }
 
         function verifyDev() {
             const input = document.getElementById('devKeyInput').value.trim();
-            // الرمز السرّي المشفر (TAEHADEV)
             if (btoa(input) === "VEFFSEFERVY=") {
                 closeDevAuth();
                 openDevDash();
@@ -528,10 +548,10 @@
         }
 
         function saveData() {
-            localStorage.setItem('taeha_v4_users', JSON.stringify(users));
-            localStorage.setItem('taeha_v4_posts', JSON.stringify(posts));
-            localStorage.setItem('taeha_v4_banned', JSON.stringify(bannedUsers));
-            localStorage.setItem('taeha_v4_settings', JSON.stringify(settings));
+            localStorage.setItem('taeha_v5_users', JSON.stringify(users));
+            localStorage.setItem('taeha_v5_posts', JSON.stringify(posts));
+            localStorage.setItem('taeha_v5_banned', JSON.stringify(bannedUsers));
+            localStorage.setItem('taeha_v5_settings', JSON.stringify(settings));
         }
     </script>
 </body>
